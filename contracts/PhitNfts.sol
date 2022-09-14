@@ -17,6 +17,8 @@ contract PhitNfts is ERC721Enumerable, Ownable{
 
     string _baseTokenURI;
 
+    mapping(uint => address) public listOfAddressesThatHaveMinted;
+
     IWhitelist whitelist;
 
     modifier onlyWhenNotPaused{
@@ -39,10 +41,14 @@ contract PhitNfts is ERC721Enumerable, Ownable{
         require(whitelist.whitelistedAddresses(msg.sender), "You are not whitelisted");
         require(tokenIds < maxTokenIds, "Exceeded maximum Phit Nfts");
         require(msg.value >= _price, "Ether sent is not enough");
-        tokenIds +=1;
-          //_safeMint is a safer version of the _mint function as it ensures that
-          // if the address being minted to is a contract, then it knows how to deal with ERC721 tokens
-          // If the address being minted to is not a contract, it works the same way as _mint
+
+        uint numOfIdsMinted = tokenIds + 1;
+        listOfAddressesThatHaveMinted[numOfIdsMinted] = msg.sender;
+
+        tokenIds = numOfIdsMinted;
+        //_safeMint is a safer version of the _mint function as it ensures that
+        // if the address being minted to is a contract, then it knows how to deal with ERC721 tokens
+        // If the address being minted to is not a contract, it works the same way as _mint
         _safeMint(msg.sender, tokenIds);
     }
 
@@ -52,7 +58,11 @@ contract PhitNfts is ERC721Enumerable, Ownable{
         require(presaleStarted && block.timestamp >= presaleEnded, "Presale has not ended yet");
         require(tokenIds < maxTokenIds, "Exceeded maximum Phit Nfts");
         require(msg.value >= _price , "Ether sent is not enough");
-        tokenIds += 1;
+
+        uint numOfIdsMinted = tokenIds + 1;
+        listOfAddressesThatHaveMinted[numOfIdsMinted] = msg.sender;
+
+        tokenIds = numOfIdsMinted;
         _safeMint(msg.sender, tokenIds);
     }
 
