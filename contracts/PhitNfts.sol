@@ -17,7 +17,7 @@ contract PhitNfts is ERC721Enumerable, Ownable{
 
     string _baseTokenURI;
 
-    mapping(uint => address) public listOfAddressesThatHaveMinted;
+    mapping(address => uint) public listOfAddressesThatHaveMinted;
 
     IWhitelist whitelist;
 
@@ -43,7 +43,7 @@ contract PhitNfts is ERC721Enumerable, Ownable{
         require(msg.value >= _price, "Ether sent is not enough");
 
         uint numOfIdsMinted = tokenIds + 1;
-        listOfAddressesThatHaveMinted[numOfIdsMinted] = msg.sender;
+        listOfAddressesThatHaveMinted[msg.sender] = numOfIdsMinted;
 
         tokenIds = numOfIdsMinted;
         //_safeMint is a safer version of the _mint function as it ensures that
@@ -60,7 +60,7 @@ contract PhitNfts is ERC721Enumerable, Ownable{
         require(msg.value >= _price , "Ether sent is not enough");
 
         uint numOfIdsMinted = tokenIds + 1;
-        listOfAddressesThatHaveMinted[numOfIdsMinted] = msg.sender;
+        listOfAddressesThatHaveMinted[msg.sender] = numOfIdsMinted;
 
         tokenIds = numOfIdsMinted;
         _safeMint(msg.sender, tokenIds);
